@@ -1,0 +1,149 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>聚合规则 · Clash 流量簿</title><style>
+:root{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;color:#283f32;background:#f4f7f4;font-size:17px;line-height:1.8}*{box-sizing:border-box}body{margin:0}header{background:#fff;border-bottom:1px solid #e0e9e2;padding:20px max(24px,calc((100vw - 1100px)/2));display:flex;align-items:center;justify-content:space-between;gap:20px}header strong{white-space:nowrap}nav{display:flex;gap:20px;flex-wrap:wrap}a{color:#17765f;text-underline-offset:4px}header a{text-decoration:none}header a[aria-current]{font-weight:650;color:#214d35}main{max-width:1100px;margin:32px auto;padding:42px 54px;background:white;border:1px solid #e0e9e2;border-radius:20px}h1{font-size:34px;line-height:1.35;margin:0 0 20px;letter-spacing:-.8px}h2{font-size:25px;margin:40px 0 16px;scroll-margin-top:24px}h3{font-size:20px;margin:28px 0 12px}p{margin:14px 0}li{margin:8px 0}table{display:block;max-width:100%;overflow-x:auto;border-collapse:collapse;font-size:16px;margin:22px 0}th,td{border:1px solid #e0e8e1;padding:12px 16px;text-align:left;vertical-align:top}th{background:#f1f6f2;white-space:nowrap}code{font-family:ui-monospace,SFMono-Regular,monospace;font-size:.85em;background:#eff4f0;padding:3px 5px;border-radius:4px;overflow-wrap:anywhere}pre{overflow:auto;background:#eef4ef;border:1px solid #dfebe1;border-radius:12px;padding:22px;line-height:1.6}pre code{padding:0;background:transparent;white-space:pre;overflow-wrap:normal}.toc{background:#f6f9f6;border:1px solid #e5eee6;border-radius:12px;padding:18px 26px;margin:24px 0}.toc ul{padding-left:20px;margin:0}.toc a{text-decoration:none;font-size:16px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin:32px 0}.card{display:block;padding:24px;border:1px solid #dce9df;border-radius:16px;text-decoration:none;background:#f4f9f5}.card strong{display:block;font-size:22px}.card p{font-size:16px;color:#718276;margin:12px 0 0}footer{border-top:1px solid #e3ece5;margin-top:40px;padding-top:20px;font-size:14px;color:#79887c}a:focus-visible{outline:3px solid #5c9977;outline-offset:4px}@media(max-width:800px){header{padding:18px 22px;display:block}nav{margin-top:12px}main{margin:18px;padding:28px 24px}.cards{grid-template-columns:1fr}h1{font-size:28px}}@media print{body{background:white;font-size:11pt}header,.toc{display:none}main{border:0;margin:0;padding:0;max-width:none}h1{font-size:24pt}h2{font-size:17pt;break-after:avoid}h3{break-after:avoid}pre,table{break-inside:avoid}a{color:inherit}table{font-size:10pt}}
+</style></head><body><header><strong><a href="index.html">Clash 流量簿 · 文档</a></strong><nav aria-label="文档导航"><a href="使用文档.html">使用文档</a><a href="运行文档.html">运行文档</a><a href="系统说明.html">系统说明</a><a href="聚合规则.html" aria-current="page">聚合规则</a></nav></header><main><h1 id="_1">聚合规则</h1><div class="toc">
+<ul>
+<li><a href="#_1">聚合规则</a><ul>
+<li><a href="#_2">推荐用法</a></li>
+<li><a href="#chrome">为什么会有两个 Chrome</a></li>
+<li><a href="#chatgpt-codex">ChatGPT 和 Codex 怎么合并</a></li>
+<li><a href="#_3">汇总、来源和连接有什么区别</a></li>
+<li><a href="#_4">日历怎么读</a></li>
+<li><a href="#_5">柱状图和折线图</a></li>
+<li><a href="#_6">导出与数据保留</a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<p>本说明适用于 Clash 流量簿 0.1.4。所有合计都是已经采集到的代理传输字节，不能当作机场账单。切换聚合方式不改写原始记录。</p>
+<h2 id="_2">推荐用法</h2>
+<p>平时使用「合并 ChatGPT / Codex」和明细「汇总」。核对重复应用时，点击行末「来源」；希望完全分开看时，选择「应用分别统计」及「按来源」。三项偏好（图表类型、应用归并、明细方式）保存在本机，重启继续生效。网址中的明确选项优先于保存的偏好。</p>
+<h2 id="chrome">为什么会有两个 Chrome</h2>
+<p>同一个应用可以使用不同订阅、实际节点和代理链。旧版把代理链分别列成行，却没有直接展示差异，因此看起来一模一样。</p>
+<p>新版汇总维度是：<strong>应用身份 × 有效订阅 × 节点身份</strong>。例如同一 Chrome、同一订阅和同一节点，分别走 <code>Google → Proxies → 节点</code> 与 <code>Final → Proxies → 节点</code>，现在合为一行，点击「来源 · 2」查看两条来源。</p>
+<p>同名但不同身份的节点仍分开。节点编号来自活动配置、实际节点身份与 Provider 信息；配置上下文变化可能形成新编号，即使名称相同也不会贸然合并。同名应用的身份也可能不同，界面显示编号前 8 位，来源弹窗显示完整编号。</p>
+<p>应用身份优先从进程路径所属 <code>.app</code> 的 Bundle ID 获取，否则使用应用包路径或进程信息生成本机 HMAC 编号。名称只是标签。历史库没有保存原始进程路径和 Bundle ID，因此不能事后还原两个历史编号究竟来自哪个安装路径。编号用于区分，不代表安全身份认证。</p>
+<h2 id="chatgpt-codex">ChatGPT 和 Codex 怎么合并</h2>
+<table>
+<thead>
+<tr>
+<th>已记录的应用名称</th>
+<th>合并模式</th>
+<th>分别统计模式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ChatGPT</td>
+<td>ChatGPT / Codex</td>
+<td>按原始应用编号分别显示</td>
+</tr>
+<tr>
+<td>codex / Codex</td>
+<td>ChatGPT / Codex</td>
+<td>按原始应用编号分别显示</td>
+</tr>
+<tr>
+<td>ChatGPT Computer Use</td>
+<td>ChatGPT / Codex</td>
+<td>按原始应用编号分别显示</td>
+</tr>
+<tr>
+<td>Chrome / Google Chrome</td>
+<td>保持原应用</td>
+<td>保持原应用</td>
+</tr>
+<tr>
+<td>chrome-headless-shell</td>
+<td>保持原应用</td>
+<td>保持原应用</td>
+</tr>
+<tr>
+<td>其他名称</td>
+<td>保持原应用</td>
+<td>保持原应用</td>
+</tr>
+</tbody>
+</table>
+<p>匹配规则是去掉名称两端空格、忽略大小写后的<strong>完全匹配</strong>，不做关键词包含匹配。<code>ChatGPT Helper</code> 这样的独立历史名称不会因为包含 ChatGPT 被自动合并；如果采集时已识别为 ChatGPT 所属应用，保存的名称是 ChatGPT，则按该记录归并。</p>
+<p>这是一个方便查看的应用组合，不表示 ChatGPT、Codex 和 Computer Use 是同一产品或同一进程，也不能推断请求由哪个会话发起。浏览器访问 ChatGPT 网站仍算浏览器；当前系统不保存访问域名，不按网站划分流量。</p>
+<p>组合模式中，排行和应用筛选使用相同的组合身份 <code>family:openai</code>。切换合并方式会清除应用筛选，保留日期、订阅和节点筛选，避免旧筛选造成误解。当前没有自定义组合编辑器。</p>
+<h2 id="_3">汇总、来源和连接有什么区别</h2>
+<table>
+<thead>
+<tr>
+<th>查看方式</th>
+<th>分组维度</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>汇总</td>
+<td>显示应用身份、有效订阅、节点身份</td>
+<td>日常看用量，折叠代理链差异</td>
+</tr>
+<tr>
+<td>按来源</td>
+<td>原始应用编号、有效订阅、节点编号、代理链、归属依据</td>
+<td>核对原始应用与路由差异</td>
+</tr>
+<tr>
+<td>来源弹窗</td>
+<td>所选应用和节点在当前范围内的原始来源</td>
+<td>查看完整编号、链路、上传、下载、首末记录分钟</td>
+</tr>
+</tbody>
+</table>
+<p>「来源数」是不同来源组合数量，不是连接数、进程数或请求数。同一组合里的不同分钟会累加。来源弹窗中的时间是当前查询范围内第一条和最后一条记录所在分钟，不是连续在线时间。按来源模式下点击来源，会查看该原始应用、订阅、节点下的所有链路。</p>
+<p>每行总量 = 上传 + 下载。相同筛选下，汇总与按来源的总量相同；组合前后总量相同。排行只显示前 50 名，不保证把整个排行相加等于全部流量；明细可翻页，导出包含所有匹配行。</p>
+<p>手动指定订阅作用于节点身份，历史与后续查询都会使用覆盖后的订阅；撤销覆盖即可恢复原始归属。归属调整不改变流量字节。</p>
+<h2 id="_4">日历怎么读</h2>
+<p>「本月」覆盖当月 1 日至下月 1 日，「本年」覆盖当年 1 月 1 日至次年 1 月 1 日，结束时间不含。自定义范围达到 28 个日期时也展示日历。全部时间按北京时间计算；自定义首尾日期可能只有部分时段。</p>
+<p>每个日期的颜色代表该日当前筛选下的<strong>已记录上传 + 下载</strong>。阈值固定，跨月可直接比较。界面 KB、MB、GB 按 1024 换算。</p>
+<table>
+<thead>
+<tr>
+<th>颜色等级</th>
+<th>日流量范围</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>最浅灰绿</td>
+<td>0，且有采集覆盖</td>
+</tr>
+<tr>
+<td>浅绿</td>
+<td>大于 0、小于 10 MB</td>
+</tr>
+<tr>
+<td>中浅绿</td>
+<td>大于等于 10 MB、小于 100 MB</td>
+</tr>
+<tr>
+<td>中绿</td>
+<td>大于等于 100 MB、小于 1 GB</td>
+</tr>
+<tr>
+<td>深绿</td>
+<td>大于等于 1 GB</td>
+</tr>
+<tr>
+<td>灰色斜纹</td>
+<td>没有覆盖记录，也没有匹配流量，不能判为零用量</td>
+</tr>
+<tr>
+<td>淡色禁用</td>
+<td>未来日期</td>
+</tr>
+</tbody>
+</table>
+<p><code>◦</code> 表示采集覆盖少于该日所选且已经过去时段的 98%。采集覆盖是全局记录器工作时间，不是某个应用在线时间，更不是字节完整率。即使覆盖很高，快照采样仍可能遗漏极短连接和断开前末尾流量。只有流量却没有覆盖信息的历史也标为部分记录。</p>
+<p>鼠标停留或键盘聚焦日期，可阅读用量详情；点击日期切换到当天的按小时趋势。对于自定义范围，点击日期会查看完整当天，并在顶部显示新的范围。</p>
+<h2 id="_5">柱状图和折线图</h2>
+<p>柱状图把下载和上传堆叠，柱高表示总量。折线图分别显示下载、上传两条线，不堆叠，读值使用相同纵轴；点上方不会再次加上另一条线的流量。无覆盖且无流量的时段会断线，未来时段不绘制，避免用连线猜测缺失数据。</p>
+<p>粒度可选分钟、15 分钟、小时、天；单次最多 400 个时段。点击时段可读上传、下载并继续查看更细的时段。日历始终按天聚合，不随趋势粒度改变。</p>
+<h2 id="_6">导出与数据保留</h2>
+<p>CSV 沿用当前日期、应用、节点、订阅筛选，以及应用归并和明细方式。除名称和字节外，还包含应用编号、节点编号、来源数、首末记录分钟和聚合模式。汇总模式不把多条链路拼成一个字符串，需核对链路时先选「按来源」再导出。</p>
+<p>偏好与原始分钟记录分开存放；切换显示不迁移或重写历史。只有明确清理或自动保留策略才会删除历史。详见 <a href="使用文档.html">使用文档</a>、<a href="运行文档.html">运行文档</a> 和 <a href="系统说明.html">系统说明</a>。</p><footer>版本 0.2.0 · 本文档支持离线阅读与打印 · 2026-09-12</footer></main></body></html>

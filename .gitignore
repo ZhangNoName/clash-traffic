@@ -1,0 +1,45 @@
+# macOS and editors
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.build-env/
+.pytest_cache/
+.mypy_cache/
+
+# Node.js / Next.js
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/*.tsbuildinfo
+
+# Generated frontend served by the Python backend
+clash_traffic/static/ui/
+
+# Local builds and release artifacts
+work/
+build/
+build-work/
+dist/
+release/
+*.app/
+*.dmg
+*.dmg.sha256
+
+# Local traffic data, identity material and logs
+preview-data/
+*.sqlite
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+identity.key
+collector.lock
+*.log
+
+# Vendored build wheels are local packaging inputs
+wheels/

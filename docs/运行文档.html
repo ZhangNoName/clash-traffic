@@ -1,0 +1,261 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>运行文档 · Clash 流量簿</title><style>
+:root{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;color:#283f32;background:#f4f7f4;font-size:17px;line-height:1.8}*{box-sizing:border-box}body{margin:0}header{background:#fff;border-bottom:1px solid #e0e9e2;padding:20px max(24px,calc((100vw - 1100px)/2));display:flex;align-items:center;justify-content:space-between;gap:20px}header strong{white-space:nowrap}nav{display:flex;gap:20px;flex-wrap:wrap}a{color:#17765f;text-underline-offset:4px}header a{text-decoration:none}header a[aria-current]{font-weight:650;color:#214d35}main{max-width:1100px;margin:32px auto;padding:42px 54px;background:white;border:1px solid #e0e9e2;border-radius:20px}h1{font-size:34px;line-height:1.35;margin:0 0 20px;letter-spacing:-.8px}h2{font-size:25px;margin:40px 0 16px;scroll-margin-top:24px}h3{font-size:20px;margin:28px 0 12px}p{margin:14px 0}li{margin:8px 0}table{display:block;max-width:100%;overflow-x:auto;border-collapse:collapse;font-size:16px;margin:22px 0}th,td{border:1px solid #e0e8e1;padding:12px 16px;text-align:left;vertical-align:top}th{background:#f1f6f2;white-space:nowrap}code{font-family:ui-monospace,SFMono-Regular,monospace;font-size:.85em;background:#eff4f0;padding:3px 5px;border-radius:4px;overflow-wrap:anywhere}pre{overflow:auto;background:#eef4ef;border:1px solid #dfebe1;border-radius:12px;padding:22px;line-height:1.6}pre code{padding:0;background:transparent;white-space:pre;overflow-wrap:normal}.toc{background:#f6f9f6;border:1px solid #e5eee6;border-radius:12px;padding:18px 26px;margin:24px 0}.toc ul{padding-left:20px;margin:0}.toc a{text-decoration:none;font-size:16px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin:32px 0}.card{display:block;padding:24px;border:1px solid #dce9df;border-radius:16px;text-decoration:none;background:#f4f9f5}.card strong{display:block;font-size:22px}.card p{font-size:16px;color:#718276;margin:12px 0 0}footer{border-top:1px solid #e3ece5;margin-top:40px;padding-top:20px;font-size:14px;color:#79887c}a:focus-visible{outline:3px solid #5c9977;outline-offset:4px}@media(max-width:800px){header{padding:18px 22px;display:block}nav{margin-top:12px}main{margin:18px;padding:28px 24px}.cards{grid-template-columns:1fr}h1{font-size:28px}}@media print{body{background:white;font-size:11pt}header,.toc{display:none}main{border:0;margin:0;padding:0;max-width:none}h1{font-size:24pt}h2{font-size:17pt;break-after:avoid}h3{break-after:avoid}pre,table{break-inside:avoid}a{color:inherit}table{font-size:10pt}}
+</style></head><body><header><strong><a href="index.html">Clash 流量簿 · 文档</a></strong><nav aria-label="文档导航"><a href="使用文档.html">使用文档</a><a href="运行文档.html" aria-current="page">运行文档</a><a href="系统说明.html">系统说明</a><a href="聚合规则.html">聚合规则</a></nav></header><main><h1 id="clash">Clash 流量簿 · 运行文档</h1><div class="toc">
+<ul>
+<li><a href="#clash">Clash 流量簿 · 运行文档</a><ul>
+<li><a href="#1">1. 环境与交付物</a></li>
+<li><a href="#2">2. 安装与运行</a></li>
+<li><a href="#3">3. 文件与权限</a></li>
+<li><a href="#4">4. 升级</a></li>
+<li><a href="#5">5. 备份、恢复与卸载</a></li>
+<li><a href="#6">6. 故障排查</a></li>
+<li><a href="#7">7. 从源码运行</a></li>
+<li><a href="#8">8. 构建与验证</a></li>
+<li><a href="#014">0.1.4 日历与聚合更新</a></li>
+<li><a href="#020">0.2.0 前端开发与构建</a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<p>版本 0.2.0 · 2026-09-12 · 面向安装、升级、排障与源码运行</p>
+<h2 id="1">1. 环境与交付物</h2>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>成品平台</td>
+<td>macOS Apple Silicon / arm64</td>
+</tr>
+<tr>
+<td>已验证环境</td>
+<td>本机 macOS 26.6.2、Clash Verge Rev 2.5.2、Mihomo v1.19.29</td>
+</tr>
+<tr>
+<td>应用最低版本声明</td>
+<td>macOS 13.3；只验证过上述本机环境，未承诺所有低版本兼容</td>
+</tr>
+<tr>
+<td>运行依赖</td>
+<td>成品内置 Python 3.9、PyYAML；WebKit 使用系统框架</td>
+</tr>
+<tr>
+<td>安装文件</td>
+<td><code>Clash-Traffic-0.2.0-arm64.dmg</code></td>
+</tr>
+<tr>
+<td>原生应用</td>
+<td><code>Clash 流量簿.app</code></td>
+</tr>
+<tr>
+<td>文档</td>
+<td>本目录四份 Markdown 及对应的离线 HTML，入口 <code>index.html</code></td>
+</tr>
+<tr>
+<td>签名</td>
+<td>ad-hoc 本地签名，尚无 Apple Developer ID 签名和公证</td>
+</tr>
+</tbody>
+</table>
+<p>普通使用不需要开发环境。首次安装如果被系统拦截，可在确认安装包来源后使用系统提供的“隐私与安全性 → 仍要打开”；请勿关闭系统全局安全校验。</p>
+<h2 id="2">2. 安装与运行</h2>
+<p>把安装盘中的应用拖到“应用程序”，推出安装盘后启动。不要直接在 DMG 内运行；应用会提示先安装。</p>
+<p>启动时应用注册当前用户 LaunchAgent，启动独立后台记录器，再加载本机 HTTP 服务中的界面。它不修改 Clash Verge 配置，不替换 Clash 内核，不需要外部 TCP 控制端口。</p>
+<p>默认连接位置：</p>
+<pre><code class="language-text">Mihomo Unix socket
+/tmp/verge/verge-mihomo.sock
+
+Clash Verge 数据目录
+~/Library/Application Support/io.github.clash-verge-rev.clash-verge-rev
+
+本机界面/API
+http://127.0.0.1:19797
+</code></pre>
+<p>菜单“记录服务”提供启动、停止、打开数据文件夹和卸载服务。当前用户登录后 LaunchAgent 自动运行；退出界面不会停止后台采集。菜单栏图标由桌面应用提供，需要打开应用后才出现。关闭窗口会保留图标，⌘Q 会退出应用并移除图标；后台记录器不受影响。</p>
+<h2 id="3">3. 文件与权限</h2>
+<table>
+<thead>
+<tr>
+<th>文件或目录</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>~/Library/Application Support/ClashTraffic/traffic.sqlite3</code></td>
+<td>历史、设置、订阅覆盖、运行状态</td>
+</tr>
+<tr>
+<td>同目录 <code>traffic.sqlite3-wal</code>、<code>traffic.sqlite3-shm</code></td>
+<td>SQLite 临时事务相关文件，运行时可能存在</td>
+</tr>
+<tr>
+<td>同目录 <code>identity.key</code></td>
+<td>生成稳定节点/应用身份的本机密钥</td>
+</tr>
+<tr>
+<td>同目录 <code>collector.lock</code></td>
+<td>防止同一目录重复运行采集器</td>
+</tr>
+<tr>
+<td>同目录 <code>service.log</code>、<code>.1</code>、<code>.2</code></td>
+<td>每份约 1 MB 的轮转日志</td>
+</tr>
+<tr>
+<td><code>~/Library/LaunchAgents/local.clash-traffic.collector.plist</code></td>
+<td>当前用户登录自启与异常重启配置</td>
+</tr>
+<tr>
+<td><code>.app/Contents/Resources/service</code></td>
+<td>封装后的后台记录器及 Python 运行时</td>
+</tr>
+<tr>
+<td><code>.app/Contents/Resources/docs</code></td>
+<td>离线文档</td>
+</tr>
+</tbody>
+</table>
+<p>记录器使用当前用户权限，HTTP 只监听回环地址。应用首次创建数据目录时设置用户专用权限；不需要授予管理员权限。不能读取 Clash socket 或配置时会暂停采集并重试。</p>
+<h2 id="4">4. 升级</h2>
+<ol>
+<li>菜单“记录服务 → 停止本次后台记录”。</li>
+<li>退出 Clash 流量簿，替换同一安装位置的 <code>.app</code>。</li>
+<li>再次打开应用，等待“记录中”。</li>
+</ol>
+<p>数据目录独立于 <code>.app</code>，替换应用会保留历史、身份密钥、映射和清理设置。移动应用位置后重新启动，会更新服务配置里的可执行文件路径。避免同时打开两个不同位置的副本。</p>
+<p>0.2.0 沿用现有数据库结构，本次升级无数据迁移。升级造成的采集中断不补算。</p>
+<h2 id="5">5. 备份、恢复与卸载</h2>
+<p><strong>备份：</strong>先停止后台记录，复制整个 <code>ClashTraffic</code> 数据目录到独立备份位置，然后恢复记录。至少保留数据库及 <code>identity.key</code>；若还有 WAL/SHM，必须与数据库一起备份，不能只复制正在写入的主数据库。</p>
+<p><strong>恢复：</strong>停止记录并退出应用；先额外备份当前数据；用同一份完整备份替换数据目录内对应文件，保留当前用户读写权限；重新打开应用。不要把不同时间的数据库与 WAL 混合。密钥丢失不妨碍历史查询，但后续身份可能改变。</p>
+<p><strong>卸载：</strong>先从应用菜单选择“卸载后台服务（保留历史）”，再将 <code>.app</code> 移到废纸篓。历史目录不会被自动删除。再次打开应用会重新注册服务；若不再使用，不要重新启动应用。</p>
+<h2 id="6">6. 故障排查</h2>
+<table>
+<thead>
+<tr>
+<th>现象</th>
+<th>检查和处理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>采集暂停</td>
+<td>确认 Clash Verge 和内核运行；确认 socket 文件存在；尝试菜单启动后台记录</td>
+</tr>
+<tr>
+<td>一直为零</td>
+<td>确认产生的是代理流量；取消应用/节点筛选；新安装不含之前历史</td>
+</tr>
+<tr>
+<td>页面无法加载</td>
+<td>检查 19797 是否被其他程序占用，查看后台服务和日志</td>
+</tr>
+<tr>
+<td>日期查询报错</td>
+<td>范围为 1 分钟至 366 天，结束晚于开始；细粒度最多约 400 个时段</td>
+</tr>
+<tr>
+<td>保存失败或请求校验失败</td>
+<td>刷新界面后重试；后台重启后 CSRF 令牌会更新</td>
+</tr>
+<tr>
+<td>未知订阅</td>
+<td>在归属管理核对节点并手动指定；动态 Provider 等配置形式可能缺少证据</td>
+</tr>
+<tr>
+<td>磁盘使用稍高于上限</td>
+<td>等待下一次每分钟维护；容量上限为软上限，日志独立限额</td>
+</tr>
+<tr>
+<td>退出应用仍在采集</td>
+<td>属于正常行为，使用“停止本次后台记录”停止</td>
+</tr>
+</tbody>
+</table>
+<p>可在终端运行以下只读诊断。<code>/api/status</code> 包含临时 CSRF 令牌，不要直接公开完整响应。</p>
+<pre><code class="language-sh">launchctl print &quot;gui/$(id -u)/local.clash-traffic.collector&quot;
+ls -l /tmp/verge/verge-mihomo.sock
+lsof -nP -iTCP:19797 -sTCP:LISTEN
+tail -n 30 &quot;$HOME/Library/Application Support/ClashTraffic/service.log&quot;
+</code></pre>
+<p>状态正常但“采集暂停”时先关注 Clash socket 和配置读取。日志只记录错误类别，不打印订阅凭据或原始连接。</p>
+<h2 id="7">7. 从源码运行</h2>
+<p>以下命令在交付源码目录 <code>clash-traffic/</code> 中执行。开发服务使用单独的数据目录和端口，不访问正式历史库。</p>
+<pre><code class="language-sh">python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python -m unittest discover -s tests -v
+.venv/bin/python -m clash_traffic.server --data-dir ./work/dev-data --port 19798
+</code></pre>
+<p>开发时先按第 10 节安装并构建 Next.js 前端，再打开 <code>http://127.0.0.1:19799</code>。前端改动需重新运行 <code>build_frontend.py</code>，Python 改动需要重启服务。开发采集器也会读取 Clash，但记录到独立数据库，不合并到正式统计。按 Ctrl+C 退出。</p>
+<table>
+<thead>
+<tr>
+<th>启动参数</th>
+<th>默认值或作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--data-dir</code></td>
+<td>正式数据目录；开发必须显式设为独立目录</td>
+</tr>
+<tr>
+<td><code>--port</code></td>
+<td>19797；建议开发用 19798</td>
+</tr>
+<tr>
+<td><code>--socket</code></td>
+<td><code>/tmp/verge/verge-mihomo.sock</code></td>
+</tr>
+<tr>
+<td><code>--verge-dir</code></td>
+<td>上述 Clash Verge Rev 数据目录</td>
+</tr>
+</tbody>
+</table>
+<p>备用 CLI：<code>python3 manage.py status/start/stop/restart/open</code>，每次只传一个命令。这些命令控制正式用户服务，不是开发端口。<code>manage.py install</code> 优先安装源码旁的原生 <code>.app</code>；缺少原生应用时走旧版 Python/浏览器开发入口。</p>
+<p><code>manage.py uninstall</code> 是旧版源码卸载流程，还会移除 <code>~/Applications</code> 下的应用入口；日常桌面版请优先使用应用菜单卸载服务。</p>
+<h2 id="8">8. 构建与验证</h2>
+<p>构建需要 macOS arm64、Xcode Command Line Tools 的 clang、Python 3.9 及构建依赖。当前成品用该环境生成。</p>
+<pre><code class="language-sh">python3 -m venv .build-env
+.build-env/bin/python -m pip install -r requirements-build.txt
+.build-env/bin/python build_docs.py
+.build-env/bin/python build_macos.py --work-dir ./work/native-build --output ./release
+codesign --verify --deep --strict './release/Clash 流量簿.app'
+</code></pre>
+<p><code>build_docs.py</code> 将四份 Markdown 生成对应 HTML 与目录；<code>build_macos.py</code> 先构建 Next.js 静态前端，再编译 Cocoa 外壳、打包 Python 服务和静态资源、嵌入文档，并执行本地签名验证。</p>
+<p>下面使用新的 staging 目录制作 DMG：</p>
+<pre><code class="language-sh">mkdir -p ./work/dmg-stage
+cp -R './release/Clash 流量簿.app' ./work/dmg-stage/
+cp -R ./docs ./work/dmg-stage/文档
+ln -s /Applications ./work/dmg-stage/Applications
+hdiutil create -volname 'Clash 流量簿' -srcfolder ./work/dmg-stage -format UDZO ./release/Clash-Traffic-0.2.0-arm64.dmg
+hdiutil verify ./release/Clash-Traffic-0.2.0-arm64.dmg
+shasum -a 256 ./release/Clash-Traffic-0.2.0-arm64.dmg
+</code></pre>
+<p>发布前检查：40 项 Python 测试、前端测试与 TypeScript 类型检查、日期与分钟回填、清理取消流程、较小窗口中的弹窗标题/底部按钮、原生应用启动、签名与 DMG 校验。真正执行清理的测试只使用临时数据库，不使用用户历史。</p>
+<h2 id="014">0.1.4 日历与聚合更新</h2>
+<p>新增本年范围、本月/本年的每日流量日历，趋势可切换柱状图与折线图。明细默认折叠代理链差异；应用可合并或分别统计，点击来源可核对原始编号与链路。偏好存于本机，历史数据保持原有结构。详细操作、颜色阈值与限制见 <a href="聚合规则.html">聚合规则</a>。</p>
+<p>升级时使用 <code>Clash-Traffic-0.1.4-arm64.dmg</code> 替换应用并重启记录服务；原有数据目录继续使用，无需数据库迁移。帮助菜单增加“聚合规则”离线文档。</p>
+<h2 id="020">0.2.0 前端开发与构建</h2>
+<p>成品仍只需安装 <code>.app</code>，不用安装 Node.js。源码开发需 Node.js 20.9+ 与 npm，已用 Node.js 24.17.0 验证。先在项目根目录执行：</p>
+<pre><code class="language-sh">cd frontend
+npm ci
+npm run test
+npm run check
+cd ..
+python3 build_docs.py
+python3 build_frontend.py
+python3 -m clash_traffic.server --data-dir ./preview-data --port 19799
+</code></pre>
+<p>最后一个命令使用独立数据目录和端口，浏览器打开 <code>http://127.0.0.1:19799</code>。不要把第二个采集器指向正式数据目录。修改前端后重新运行 <code>build_frontend.py</code>，重启预览服务再刷新页面；服务会在启动时更新静态资源清单及 CSP 哈希。</p>
+<p><code>npm run dev</code> 只启动前端开发服务器，当前不代理 Python API；完整功能验证使用上面的静态构建预览。<code>build_frontend.py --install</code> 会先执行 <code>npm ci</code>。依赖版本通过 <code>package-lock.json</code> 锁定，shadcn 组件源码直接纳入项目。</p>
+<p>桌面构建沿用已配置 PyInstaller、PyYAML、Markdown 的 Python 环境：</p>
+<pre><code class="language-sh">python3 build_macos.py --work-dir ./build-work --output ./release
+</code></pre>
+<p>默认先构建文档和前端，然后封装原生应用。<code>--skip-frontend</code> 仅用于已完成文档及前端验证的重复封装。输出目录中包含 <code>.app</code>，可用 <code>hdiutil create</code> 制作 DMG。0.2.0 使用 macOS 13.3+ 的系统声明，现代 WebKit 为 Tailwind 4 提供所需 CSS 能力。</p>
+<p>升级前停止后台服务并退出旧应用，再替换应用。数据目录、身份密钥、清理策略和订阅覆盖继续沿用，无数据库迁移。旧版安装包可回退使用同一数据目录。</p><footer>版本 0.2.0 · 本文档支持离线阅读与打印 · 2026-09-12</footer></main></body></html>

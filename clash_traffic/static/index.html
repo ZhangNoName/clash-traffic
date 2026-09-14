@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Clash 流量簿 · 本地代理统计</title>
+  <link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/vendor/flatpickr/flatpickr.min.css"><link rel="stylesheet" href="/style.css">
+  <script src="/vendor/flatpickr/flatpickr.min.js" defer></script>
+  <script src="/vendor/flatpickr/zh.js" defer></script>
+  <script src="/app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">跳转到统计内容</a>
+<aside class="sidebar">
+  <a href="/" class="brand"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M8 22V14 M16 25V7 M24 22V11"/></svg></span><span>Clash 流量簿</span></a>
+  <nav aria-label="主导航">
+    <a class="nav-item active" href="#overview"><svg viewBox="0 0 24 24" aria-hidden="true" class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z M9 3v18 M9 9h12"/></svg>流量总览</a>
+    <a class="nav-item" href="#details"><svg viewBox="0 0 24 24" aria-hidden="true" class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6h14 M5 12h14 M5 18h14"/></svg>流量明细</a>
+    <button class="nav-item" id="manage"><svg viewBox="0 0 24 24" aria-hidden="true" class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h17m-4-4 4 4-4 4 M21 17H4m4-4-4 4 4 4"/></svg>归属管理</button>
+    <button class="nav-item" id="settings"><svg viewBox="0 0 24 24" aria-hidden="true" class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16 M4 17h16 M8 4v6 M16 14v6"/></svg>存储设置</button>
+    <button class="nav-item" id="about"><svg viewBox="0 0 24 24" aria-hidden="true" class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6 M12 7v.1"/></svg>统计说明</button>
+  </nav>
+  <div class="live" id="live"><i></i><span>连接中</span></div>
+  <div class="sidebar-bottom"><span class="local-dot"></span>仅统计代理流量</div>
+</aside>
+<main id="main">
+
+  <div class="content" id="overview">
+    <div id="error" class="error" role="alert" hidden></div>
+    <section class="filters" aria-label="筛选统计范围">
+      <div class="range-presets" aria-label="时间范围"><button data-period="today" class="selected">今天</button><button data-period="7">近 7 天</button><button data-period="month">本月</button><button data-period="year">本年</button><button id="toggle-range" aria-expanded="false" aria-controls="custom-range">自定义</button></div>
+      <div class="date-fields" id="custom-range" hidden><label><span class="date-caption">开始时间</span><input type="text" id="from" class="date-trigger" readonly aria-haspopup="dialog" data-date-title="开始时间"></label><span>—</span><label><span class="date-caption">结束时间（不含）</span><input type="text" id="to" class="date-trigger" readonly aria-haspopup="dialog" data-date-title="结束时间（不含）"></label><button class="button small" id="apply-range">确定</button></div>
+      <div class="filter-selects"><label><span class="sr-only">应用归并</span><select disabled id="app_mode" aria-label="应用归并"><option value="combined">合并 ChatGPT / Codex</option><option value="separate">应用分别统计</option></select></label><label><span class="sr-only">订阅筛选</span><select id="subscription"><option value="">全部订阅</option></select></label><label><span class="sr-only">应用筛选</span><select id="app"><option value="">全部应用</option></select></label><label><span class="sr-only">节点筛选</span><select id="node"><option value="">全部节点</option></select></label><button id="reset" class="reset" title="恢复今天，清除所有筛选">重置</button></div>
+    </section>
+    <section class="metrics" aria-label="流量摘要">
+      <article class="metric primary"><div class="metric-label">代理总流量</div><div class="metric-value" id="total">—</div></article>
+      <article class="metric"><div class="metric-label"><span class="direction down" aria-hidden="true">↓</span> 下载</div><div class="metric-value" id="download">—</div></article>
+      <article class="metric"><div class="metric-label"><span class="direction up" aria-hidden="true">↑</span> 上传</div><div class="metric-value" id="upload">—</div></article>
+    </section>
+    <div class="quality-strip" id="unknown" hidden></div>
+    <section class="panel calendar-panel" id="traffic-calendar" hidden><div class="panel-head"><h2 id="calendar-heading">每日流量</h2><span>点击日期查看当天</span></div><div id="heatmap" class="heatmap"></div><div class="heat-legend"><span><i class="level-0"></i>0</span><span><i class="level-1"></i>&lt; 10 MB</span><span><i class="level-2"></i>10–100 MB</span><span><i class="level-3"></i>100 MB–1 GB</span><span><i class="level-4"></i>≥ 1 GB</span><span><i class="unrecorded"></i>无记录</span><span>◦ 部分记录</span></div><p id="calendar-selection" class="calendar-selection" aria-live="polite">颜色表示已记录的上传与下载总量。</p></section>
+    <div class="analysis-grid">
+      <section class="panel trend"><div class="panel-head"><div><h2>流量趋势</h2></div><div class="chart-tools"><div class="legend"><span><i class="key down-key"></i>下载</span><span><i class="key up-key"></i>上传</span></div><select disabled id="chart_type" aria-label="图表类型"><option value="bar">柱状图</option><option value="line">折线图</option></select><select id="granularity" aria-label="趋势粒度"><option value="auto">自动粒度</option><option value="minute">按分钟</option><option value="quarter">每 15 分钟</option><option value="hour">按小时</option><option value="day">按天</option></select></div></div>
+        <div class="chart-wrap"><div class="y-labels" id="y-labels"></div><div class="chart-scroll"><div id="chart" class="chart" role="group" aria-label="各时段流量柱状图"></div></div><div id="chart-empty" class="chart-empty" hidden><span aria-hidden="true">▥</span><strong>暂无流量记录</strong></div></div>
+        <div class="chart-detail" id="chart-detail">选择一个时段，查看上传、下载和采集覆盖。</div>
+      </section>
+      <section class="panel distribution"><div class="panel-head"><div><h2>流量排行</h2></div></div><div class="rank-tabs" role="group" aria-label="排行维度"><button data-group="app" class="selected">应用</button><button data-group="subscription">订阅</button><button data-group="node">节点</button></div><div id="ranking" class="ranking"></div></section>
+    </div>
+    <section class="panel details-panel" id="details"><div class="panel-head"><div><h2>流量明细 <span class="count" id="detail-count">0</span></h2></div><div class="detail-tools"><select disabled id="detail_mode" aria-label="明细方式"><option value="summary">汇总</option><option value="sources">按来源</option></select><button class="button secondary" id="aggregation-help">聚合规则</button><a class="button secondary" id="export" href="/api/export.csv">导出明细</a></div></div><div class="table-scroll"><table><thead><tr><th>应用</th><th>订阅</th><th>实际节点</th><th class="numeric">下载</th><th class="numeric">上传</th><th class="numeric">合计</th><th><span class="sr-only">操作</span></th></tr></thead><tbody id="detail-rows"></tbody></table></div><div class="pagination"><span id="page-label">暂无记录</span><div><button id="prev" class="button small">上一页</button><button id="next" class="button small">下一页</button></div></div></section>
+  </div>
+</main>
+<dialog id="sources-dialog" class="sources-dialog" aria-labelledby="sources-title"><div class="dialog-head"><h2 id="sources-title">流量来源</h2><button class="close" data-close="sources-dialog" aria-label="关闭来源">×</button></div><div id="sources-body" class="sources-body"></div><div class="pagination"><span id="sources-page"></span><div><button class="button small" id="sources-prev">上一页</button><button class="button small" id="sources-next">下一页</button></div></div><div class="dialog-actions"><button class="button secondary" id="source-mapping">修改订阅归属</button><button class="button filled" data-close="sources-dialog">完成</button></div></dialog>
+<dialog id="rules-dialog" aria-labelledby="rules-title"><div class="dialog-head"><h2 id="rules-title">流量如何聚合</h2><button class="close" data-close="rules-dialog" aria-label="关闭聚合规则">×</button></div><div class="about-body"><h3>同一应用，少一点重复</h3><p>汇总按应用身份、订阅和节点身份合计。不同代理链收进“来源”；同名但编号不同的应用或节点仍分别显示。</p><h3>ChatGPT / Codex，可合可分</h3><p>合并模式仅归并名称恰好为 ChatGPT、codex、ChatGPT Computer Use 的记录（忽略大小写和两端空格）。这是查看规则，不代表它们是同一进程。Chrome 和无头浏览器不会归入这个组合。</p><h3>原始记录一直保留</h3><p>切换“应用分别统计”可还原应用身份；“按来源”展开应用编号、节点编号、代理链和归属依据。来源不是连接数。切换显示方式不会增加或删除流量。</p><h3>颜色看用量，标记看覆盖</h3><p>每日颜色表示已记录的上传与下载之和。斜纹表示没有记录，◦ 表示部分记录，未来日期不可选。覆盖描述采集时间，不代表完整账单。折线在没有记录的时段断开。</p><p>完整说明见应用菜单：帮助 → 聚合规则。</p></div></dialog>
+<dialog id="mapping-dialog"><div class="dialog-head"><div><h2>订阅归属管理</h2></div><button class="close" data-close="mapping-dialog" aria-label="关闭归属管理">×</button></div><p class="dialog-intro">为节点指定订阅，历史和后续统计都会生效。选择“自动识别”可撤销修改。</p><label class="field-label" for="mapping-node">选择已记录节点</label><select id="mapping-node"></select><label class="field-label" for="mapping-sub">订阅归属</label><select id="mapping-sub"><option value="">自动识别（恢复原始归属）</option></select><div class="mapping-notice" id="mapping-note"></div><div class="dialog-actions"><button class="button secondary" data-close="mapping-dialog">取消</button><button class="button filled" id="save-mapping">保存归属</button></div></dialog>
+<dialog id="about-dialog"><div class="dialog-head"><div><h2>统计说明</h2></div><button class="close" data-close="about-dialog" aria-label="关闭统计说明">×</button></div><div class="about-body"><div class="about-status"><p id="coverage">等待采集</p><p id="since">等待记录</p></div><h3>只计算真正经过代理节点的流量</h3><p>依据每条连接的实际代理链识别，排除 DIRECT、REJECT 等直连和拦截连接。应用辅助进程尽可能归并到所属应用，无法识别的记为“未知应用”。多跳连接只计一次，不代表各跳的计费用量。</p><h3>这些数字是采样记录，不是完整账单</h3><p>每秒读取一次活动连接，记录上传、下载累计值的差额。极短连接和连接结束前最后一段流量可能遗漏。内核统计的传输字节也不包含所有协议开销或机场倍率。</p><h3>空白时段不代表用了 0 流量</h3><p>首次启动仅建立基线，已有流量不补算。中断超过 5 秒、电脑休眠或记录器重启后重新建立基线，缺失流量不推算。趋势中的采集覆盖描述采集器工作时间，不代表字节完整率。跨分钟的单次增量按时间比例分配。</p><h3>订阅归属有证据，也能手动修正</h3><p>用运行配置与订阅节点身份匹配；Provider 模式核对来源配置。无法确定时标为“归属待确认”，不会只凭节点名称猜。已建立连接沿用首次识别结果。配置刷新间隔为 5 秒，快速切换期间新连接的归属可能存在误差。</p><h3>历史数据与隐私</h3><p>上传、下载和分组信息仅存于本机。不会保存访问域名、IP、订阅地址、节点密码或原始连接。历史从开始采集时积累；不会上传到云端。</p><h3>最近的采集事件</h3><div id="events" class="events">当前时间范围内暂无中断记录。</div></div></dialog>
+<div class="toast" id="toast" role="status" hidden></div>
+<dialog id="settings-dialog" class="settings-shell" aria-labelledby="settings-title">
+  <div class="dialog-head"><h2 id="settings-title">存储设置</h2><button class="close" data-close="settings-dialog" aria-label="关闭存储设置">×</button></div>
+  <div class="settings-tabs" role="tablist" aria-label="存储管理">
+    <button id="tab-auto" role="tab" aria-selected="true" aria-controls="storage-auto" data-storage-tab="auto">自动清理</button>
+    <button id="tab-manual" role="tab" aria-selected="false" aria-controls="storage-manual" tabindex="-1" data-storage-tab="manual">手动清理</button>
+  </div>
+  <div class="settings-content">
+    <section id="storage-auto" role="tabpanel" aria-labelledby="tab-auto">
+      <div class="storage-card"><div class="storage-card-top"><span>已用空间</span><span id="storage-limit">上限 256 MB</span></div><strong id="storage-size">—</strong><div class="storage-meter"><i id="storage-meter"></i></div><div id="storage-range">正在读取</div></div>
+      <div class="settings-grid">
+        <label class="field-label" for="retention-days">保留天数<div class="unit-input"><input id="retention-days" type="number" min="0" max="3650" value="180"><span>天</span></div><small>0 表示保留全部日期</small></label>
+        <label class="field-label" for="max-mb">最大空间<div class="unit-input"><input id="max-mb" type="number" min="8" max="8192" value="256"><span>MB</span></div><small>可设 8–8192 MB</small></label>
+      </div>
+      <div class="policy-note"><span aria-hidden="true">↺</span><p>过期或超出上限，自动清理最早的历史。</p></div>
+      <details class="storage-help"><summary>空间如何计算</summary><p>包含数据库及 WAL/SHM，每分钟检查一次。超限时清理至约 80%；检查间隔及压缩期间可能短暂超限。程序不计入，日志另限约 3 MB。</p></details>
+    </section>
+    <section id="storage-manual" role="tabpanel" aria-labelledby="tab-manual" hidden>
+      <div class="cleanup-notice"><strong>清理指定时段</strong><p>仅删除所选时段内的历史，后台继续记录。</p></div>
+      <div class="cleanup-range"><label>开始时间<input type="text" id="clean-from" class="date-trigger" readonly aria-haspopup="dialog" data-date-title="清理开始时间"></label><label>结束时间（不含）<input type="text" id="clean-to" class="date-trigger" readonly aria-haspopup="dialog" data-date-title="清理结束时间（不含）"></label></div>
+      <p class="cleanup-hint">按北京时间清理，包含全部应用与节点。</p>
+      <div class="clear-all-row"><div><strong>全部历史</strong><p>保留清理设置和订阅映射</p></div><button class="button danger" id="clean-all">清理全部</button></div>
+      <small id="last-cleanup"></small>
+    </section>
+  </div>
+  <div class="settings-footer"><button class="button secondary" data-close="settings-dialog">取消</button><button class="button filled" id="save-settings">保存设置</button><button class="button danger" id="clean-range" hidden>清理所选时段</button></div>
+</dialog>
+<dialog id="date-dialog" class="date-dialog" aria-labelledby="date-title">
+  <div class="dialog-head"><div><h2 id="date-title">选择日期与时间</h2><p class="date-zone">北京时间 · 24 小时制</p></div><button class="close" data-close="date-dialog" aria-label="关闭日期选择">×</button></div>
+  <div class="date-dialog-body"><input id="calendar-value" type="text" hidden><div id="calendar-host"></div><div class="date-selection" id="date-selection" aria-live="polite"></div></div>
+  <div class="settings-footer"><button class="button secondary" data-close="date-dialog">取消</button><button class="button filled" id="confirm-date">确定</button></div>
+</dialog>
+<dialog id="confirm-dialog"><div class="dialog-head"><h2 id="confirm-title">确认操作</h2><button class="close" data-close="confirm-dialog" aria-label="取消确认">×</button></div><p class="dialog-intro" id="confirm-text"></p><div class="dialog-actions"><button class="button secondary" data-close="confirm-dialog">取消</button><button class="button filled" id="confirm-action">确认</button></div></dialog>
+</body>
+</html>
