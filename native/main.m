@@ -312,7 +312,9 @@ static NSString * const HomeURL = @"http://127.0.0.1:19797";
     [[NSWorkspace sharedWorkspace] openURL:[NSURL fileURLWithPath:path]];
 }
 - (void)showAbout:(id)sender {
-    NSAlert *alert=[[NSAlert alloc] init];alert.messageText=@"Clash 流量簿 0.2.0";
+    NSString *version=[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+    NSAlert *alert=[[NSAlert alloc] init];
+    alert.messageText=[NSString stringWithFormat:@"Clash 流量簿 %@",version ?: @""];
     alert.informativeText=@"本地代理流量统计\n\n按时间、订阅、节点和应用查看用量。关闭窗口或退出界面后，后台仍继续记录。\n\n仅在本机保存数据。连接快照可能遗漏短连接，不等同于机场账单。";
     [alert addButtonWithTitle:@"好"];[alert beginSheetModalForWindow:self.window completionHandler:nil];
 }

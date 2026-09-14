@@ -8,6 +8,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+from clash_traffic import __version__
+
 ROOT=Path(__file__).resolve().parent
 
 def run(args):subprocess.run([str(x) for x in args],check=True)
@@ -34,9 +36,12 @@ def main():
     shutil.copytree(ROOT/'docs',resources/'docs',dirs_exist_ok=True)
     shutil.copy2(ROOT/'THIRD_PARTY_NOTICES.md',resources/'THIRD_PARTY_NOTICES.md')
     shutil.copy2(ROOT/'FRONTEND_LICENSES.txt',resources/'FRONTEND_LICENSES.txt')
+    build_number=os.environ.get('CLASH_TRAFFIC_BUILD_NUMBER','6')
+    if not build_number.isdigit() or int(build_number) < 1:
+        raise SystemExit('CLASH_TRAFFIC_BUILD_NUMBER must be a positive integer.')
     info={'CFBundleIdentifier':'local.clash-traffic.app','CFBundleName':'Clash 流量簿',
           'CFBundleDisplayName':'Clash 流量簿','CFBundleExecutable':'ClashTraffic',
-          'CFBundleVersion':'6','CFBundleShortVersionString':'0.2.0','CFBundlePackageType':'APPL',
+          'CFBundleVersion':build_number,'CFBundleShortVersionString':__version__,'CFBundlePackageType':'APPL',
           'CFBundleIconFile':'AppIcon','LSMinimumSystemVersion':'13.3','NSHighResolutionCapable':True,
           'NSAppTransportSecurity':{'NSAllowsLocalNetworking':True},
           'NSHumanReadableCopyright':'Local personal traffic journal. Python and PyYAML retain their respective licenses.'}

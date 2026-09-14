@@ -1,6 +1,7 @@
 # Clash 流量簿
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-17765f.svg)](LICENSE)
+[![Package macOS](https://github.com/ZhangNoName/clash-traffic/actions/workflows/package-macos.yml/badge.svg)](https://github.com/ZhangNoName/clash-traffic/actions/workflows/package-macos.yml)
 ![Platform](https://img.shields.io/badge/platform-macOS%20Apple%20Silicon-283f32)
 ![Python tests](https://img.shields.io/badge/Python%20tests-40%20passed-17765f)
 
@@ -123,6 +124,18 @@ python3 -m venv /tmp/clash-traffic-build-env
 ```
 
 构建包含 Objective-C / Cocoa / WKWebView 应用外壳和 PyInstaller 打包的记录器。`build_macos.py` 生成 `.app`；将其与指向 `/Applications` 的链接置于 staging 目录，再用 `hdiutil create -srcfolder ... -format UDZO` 生成 DMG。打包流程参考 [PyInstaller 官方文档](https://pyinstaller.org/en/stable/usage.html)。
+
+## 自动打包与发布
+
+GitHub Actions 的 [Package macOS](https://github.com/ZhangNoName/clash-traffic/actions/workflows/package-macos.yml) 流水线会在每次 push、Pull Request 和手动触发时运行完整测试，并在 macOS 15 ARM64 runner 上生成：
+
+- `Clash-Traffic-<版本>-arm64.dmg`
+- `Clash-Traffic-<版本>-arm64.app.zip`
+- `SHA256SUMS.txt`
+
+普通流水线产物在 Actions 运行页保留 14 天。推送与源码版本一致的 `v*` 标签，例如当前版本 `v0.2.0`，流水线会在测试和打包通过后自动创建或更新 GitHub Release。标签名与 `clash_traffic/__init__.py` 中的版本不一致时会停止发布，避免产生标错版本的安装包。
+
+流水线生成的应用使用 ad-hoc 签名，适合测试和自行分发；它仍未经过 Apple Developer ID 签名与公证。
 
 本机 HTTP 地址 `http://127.0.0.1:19797` 仍可用于调试，日常使用无需打开它。
 
